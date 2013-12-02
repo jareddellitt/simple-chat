@@ -1,0 +1,121 @@
+@participants-width: 300px;
+@border-color: #cccccc;
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Roboto', inherit;
+    font-weight: 300;
+    margin: 0;
+    color: #333;
+    line-height: 1.428571429;
+    font-size: 14px;
+}
+
+ul.unstyled {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-weight: 100;
+    text-transform: uppercase;
+}
+
+h1 {
+    font-size: 20px;
+    margin: 0;
+    padding: 0;
+}
+
+.login {
+    width: 300px;
+    margin: auto;
+    text-align: center;
+
+    .chat-name {
+        font-size: 1.3em;
+        padding: 10px;
+        width: 100%;
+        border: 1px solid #ddd;
+    }
+}
+
+.chat {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 101px;
+    right: @participants-width;
+
+    .header {
+        padding: 10px;
+        color: #FFF;
+        background: #F26100;
+    }
+
+    .chat-text {
+        position: absolute;
+        bottom: -102px;
+        left: 0;
+        width: 100%;
+        border: 0;
+        border-top: 1px solid @border-color;
+        padding: 10px;      
+        font-size: 1.5em;
+    }
+
+    .messages {
+        height: 100%;
+        overflow: auto;
+    }
+
+    .message {
+        padding: 5px 5px 5px 10px;
+
+        &.striped {
+            background: #f7f7f7;
+        }
+
+        .time {
+            width: 85px;
+            display: inline-block;
+            color: #aaa;
+        }
+
+        .author {
+            font-weight: bold;
+            display: inline-block;
+            margin-right: 10px;
+        }
+    }
+}
+
+.participants {
+    position: fixed;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: @participants-width;
+    border-left: 1px solid @border-color;
+    background: #fff;
+
+    .header {
+        padding: 10px;
+        background: #ddd;
+    }
+
+    h2 {
+        font-size: 16px;
+        margin: 0;
+    }
+
+    .users {
+        .user {
+            padding: 5px 10px;
+        }
+    }
+}

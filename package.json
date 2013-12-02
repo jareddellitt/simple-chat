@@ -1,0 +1,19 @@
+{
+  "name": "chat",
+  "version": "0.0.0",
+  "description": "A simple real time chat app",
+  "dependencies": {
+    "socket.io": "latest",
+    "express": "latest",
+    "jade": "latest",
+    "grunt-contrib-less": "~0.8.2",
+    "grunt": "~0.4.2",
+    "grunt-contrib-watch": "~0.5.3",
+    "connect-redis": "~1.4.6",
+    "cookie": "~0.1.0",
+    "redis": "~0.9.1",
+    "lodash": "~2.4.0",
+    "moment": "~2.4.0"
+  },
+  "author": "Jared Dellitt"
+}
