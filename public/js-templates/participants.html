@@ -4,6 +4,9 @@
     </header>
 
     <ul class="unstyled users">
-        <li ng-repeat="user in users" class="user">{{ user }}</li>
+        <li ng-repeat="user in users track by $index" class="user">
+            <img src="{{user.image}}" width="30" height="30" class="avatar"/>
+            <span class="name">{{ user.name }}</span>
+        </li>
     </ul>
 </section>

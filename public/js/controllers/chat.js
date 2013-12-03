@@ -1,9 +1,9 @@
 (function (app) {
-    var myName,
-        striped = false;
+    var striped = false,
+        self;
 
     function createMessageFrom(time, author, content) {
-        var author = author === myName ? 'Me' : author,
+        var author = author.id === self._id ? 'Me' : author.name,
             stripe = striped ? ' striped' : '';
 
         striped = !striped;
@@ -20,15 +20,16 @@
             restrict: 'AE',
             templateUrl: '/js-templates/chatter.html',
             scope: true,
-            controller: ['$scope', '$element', '$location', 'socket', 'localStorageService', function ($scope, $element, $location, socket, localStorageService) {
-                var $messages = $element.find('.messages');
-                myName = localStorageService.get('username');
-
-                if (!myName) $location.path('/');
+            controller: ['$scope', '$element', '$location', 'socket', function ($scope, $element, $location, socket) {
+                var $messages = $element.find('.messages');                
 
                 socket.on('new-message', function (data) {                  
                     $messages.append(createMessageFrom(data.prettyTime, data.from, data.message));
                     $messages[0].scrollTop = 99999999;
+                });
+
+                socket.on('user', function (userData) {
+                    self = userData;
                 });
 
                 $scope.submit = function () {

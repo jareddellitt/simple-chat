@@ -1,9 +1,9 @@
-var client = require("redis").createClient(6379, 'localhost'),
-    _ = require('lodash'),
+var _ = require('lodash'),
     moment = require('moment'),
+    cookie = require('cookie'),
     io,
     sockets = {},
-    names = {},
+    User = require('./users').User,
     events = {
         USERS: 'users-list',
         CONNECTION: 'connection',
@@ -11,12 +11,9 @@ var client = require("redis").createClient(6379, 'localhost'),
         DISCONNECT: 'disconnect',
         LOGGED_IN: 'logged-in',
         CHAT: 'chat',
-        NEW_MESSAGE: 'new-message'
+        NEW_MESSAGE: 'new-message',
+        USER: 'user'
     };
-
-function getNames() {
-    return _.values(names).sort();
-}
 
 function broadcast(event, data) {
     _.each(sockets, function (s) {
@@ -24,66 +21,78 @@ function broadcast(event, data) {
     });
 }
 
-function broadcastToOthers(event, data, sender) {
-    var otherSessions = _.filter(_.keys(names), function (sessionId) {
-        return sender !== sessionId;
-    });
-
-    _.each(otherSessions, function (sessionId) {
-        sockets[sessionId].emit(event, data);
+function broadcastParticipants() {
+    User.find({ loggedIn: true }, function (err, users) {
+        var names = users.map(function (u) {
+            return { 
+                name: u.firstName + ' ' + u.lastName,
+                image: u.gravatar
+            };
+        });
+        
+        broadcast(events.USERS, names);
     });
 }
 
-function handleLoggedIn(sessionId, socket, data) {
-    if (!_.contains(_.values(names), data.name)) {
-        names[sessionId] = data.name;
+function handleDisconnected(userId) {
+    delete sockets[userId];
 
-        client.hset('chat-users', sessionId, data.name);
-
-        broadcast(events.USERS, getNames());
-    }
+    User.findOne({ id: userId }, function (err, user) {
+        user.loggedIn = false;
+        user.save(function () {
+            broadcastParticipants();
+        });
+    });    
 }
 
-function handleDisconnected(sessionId) {
-    delete sockets[sessionId];
-    delete names[sessionId];
-
-    broadcast(events.USERS, getNames());    
-}
-
-function handleConnected(socket) {
-    var sessionId = socket.handshake.sessionID;
-
-    client.hget('chat-users', sessionId, function (err, reply) {
-        if (reply) {
-            names[sessionId] = reply;
-            broadcast(events.USERS, getNames());
-        }
-    });
-
-    sockets[sessionId] = socket;
-
-    socket.on(events.LOGGED_IN, function (data)  {
-        handleLoggedIn(sessionId, socket, data);
-    })
-
-    socket.on(events.FETCH_USERS, function () {
-        socket.emit(events.USERS, getNames());
-    });
-
-    socket.on(events.DISCONNECT, function () {      
-        handleDisconnected(sessionId);
-    });
-
-    socket.on(events.CHAT, function (data) {
-        console.log('broadcasting the new message');
-
+function handleMessageSent(data, userId) {
+    User.findOne({ id: userId }, function (err, user) {
         broadcast(events.NEW_MESSAGE, {
             timestamp: new Date(),
             prettyTime: moment().format('h:mm:ss a'),
             message: data.message,
-            from: names[sessionId]
+            from: {
+                id: user._id,
+                name: user.firstName + ' ' + user.lastName
+            }
         });
+    });
+}
+
+function bindEventsTo(socket) {
+    var userId = socket.handshake.user;
+    
+    socket.on(events.LOGGED_IN, function (data)  {
+        handleLoggedIn(userId, socket, data);
+    })
+
+    socket.on(events.FETCH_USERS, function () {
+        broadcastParticipants();
+    });
+
+    socket.on(events.DISCONNECT, function () {      
+        handleDisconnected(userId);
+    });
+
+    socket.on(events.CHAT, function (data) {
+        handleMessageSent(data, userId);
+    });    
+}
+
+function handleConnected(socket) {
+    var userId = socket.handshake.user;    
+    sockets[userId] = socket;
+
+    User.findOne({ id: userId }, function (err, user) {
+        if (user) {
+            user.loggedIn = true;
+            user.save(function () {
+                socket.emit(events.USER, user);
+                
+                broadcastParticipants();     
+                bindEventsTo(socket);          
+            });            
+        }        
     });
 }
 
