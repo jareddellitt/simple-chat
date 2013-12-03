@@ -1,6 +1,5 @@
 var _ = require('lodash'),
     moment = require('moment'),
-    cookie = require('cookie'),
     io,
     sockets = {},
     User = require('./users').User,

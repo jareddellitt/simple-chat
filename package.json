@@ -9,7 +9,6 @@
     "grunt-contrib-less": "~0.8.2",
     "grunt": "~0.4.2",
     "grunt-contrib-watch": "~0.5.3",
-    "cookie": "~0.1.0",
     "lodash": "~2.4.0",
     "moment": "~2.4.0",
     "passport": "~0.1.17",
