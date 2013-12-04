@@ -7,9 +7,9 @@ var express = require("express"),
     passport = require('./app/passport-strategy').createFrom(express),
     port = 3700;
 
-
-function shutdownGracefully() {
-    console.log('Something happened, shutting down...');
+function shutdownGracefully(e) {
+    console.error(e);
+    console.error(e.stack);
 
     chat.shutdown(function () {
         process.exit();
@@ -20,7 +20,9 @@ process.on('uncaughtException', shutdownGracefully);
 process.on('SIGINT', shutdownGracefully);
 
 var sessionStore = new MongoStore({
-    db: 'chat'
+    db: 'chat',
+    username: 'simpleChat',
+    password: 's3wCy2tTy6vDesPFheVVYSqd'
 });
 
 var sessionOpts = {

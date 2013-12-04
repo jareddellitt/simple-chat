@@ -1,7 +1,8 @@
 var User = require('./users').User,
-    GoogleStrategy = require('passport-google').Strategy, 
+    GoogleStrategy = require('passport-google').Strategy,
     crypto = require('crypto'),
-    passport = require('passport');
+    passport = require('passport'),
+    host = 'http://192.168.128.43:3700';
 
 function createGravatarFrom(email) {
     var hash = crypto.createHash('md5').update(email.toLowerCase().trim()).digest('hex');
@@ -10,7 +11,7 @@ function createGravatarFrom(email) {
 
 function createUserFrom(id, profile) {
     return new User({
-        id: identifier,
+        id: id,
         firstName: profile.name.givenName,
         lastName: profile.name.familyName,
         email: profile.emails[0].value,
@@ -37,8 +38,8 @@ function lookupUser(identifier, profile, done) {
 }
 
 var strategy = new GoogleStrategy({
-    returnURL: 'http://10.0.0.17:3700/auth/google/return',
-    realm: 'http://10.0.0.17:3700/'
+    returnURL: host + '/auth/google/return',
+    realm: host
 }, lookupUser);
 
 exports.createFrom = function (express) {
@@ -48,7 +49,7 @@ exports.createFrom = function (express) {
       done(null, user.id);
     });
 
-    passport.deserializeUser(function(obj, done) {  
+    passport.deserializeUser(function(obj, done) {
         done(null, obj);
     });
 

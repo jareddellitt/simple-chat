@@ -111,4 +111,9 @@ exports.shutdown = function (done) {
             u.save(checkedSaved);
         });
     });
+
+    //Just in case something blows up and the program can't exit
+    setTimeout(function () {
+        done();
+    }, 1000);
 };
