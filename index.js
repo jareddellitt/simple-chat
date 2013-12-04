@@ -5,6 +5,7 @@ var express = require("express"),
     MongoStore = require('connect-mongo')(express),
     passportSocketIo = require("passport.socketio"),
     passport = require('./app/passport-strategy').createFrom(express),
+    mongoose = require('mongoose'),
     port = 3700;
 
 function shutdownGracefully(e) {
@@ -23,6 +24,11 @@ var sessionStore = new MongoStore({
     db: 'chat',
     username: 'simpleChat',
     password: 's3wCy2tTy6vDesPFheVVYSqd'
+});
+
+mongoose.connect('mongodb://localhost/chat', {
+    user: 'simpleChat',
+    pass: 's3wCy2tTy6vDesPFheVVYSqd'
 });
 
 var sessionOpts = {

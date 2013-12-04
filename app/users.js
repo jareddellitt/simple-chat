@@ -1,11 +1,6 @@
 var mongoose = require('mongoose'),
     Schema = mongoose.Schema;
 
-mongoose.connect('mongodb://localhost/chat', {
-	user: 'simpleChat',
-	pass: 's3wCy2tTy6vDesPFheVVYSqd'
-});
-
 var userSchema = new Schema({
     id: String,
     firstName: String,

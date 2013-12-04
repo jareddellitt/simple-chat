@@ -2,6 +2,7 @@ var _ = require('lodash'),
     moment = require('moment'),
     sockets = {},
     User = require('./users').User,
+    messages = require('./messages'),
     events = {
         USERS: 'users-list',
         CONNECTION: 'connection',
@@ -54,6 +55,8 @@ function handleMessageSent(data, userId) {
                 name: user.firstName + ' ' + user.lastName
             }
         });
+
+        messages.add(userId, data.message);
     });
 }
 
