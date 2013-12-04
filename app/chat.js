@@ -1,6 +1,5 @@
 var _ = require('lodash'),
     moment = require('moment'),
-    io,
     sockets = {},
     User = require('./users').User,
     events = {
@@ -95,8 +94,6 @@ function handleConnected(socket) {
     });
 }
 
-exports.init = function (server) {
-    io = server;
-
+exports.init = function (io) {
     io.sockets.on(events.CONNECTION, handleConnected);
 };

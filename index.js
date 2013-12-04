@@ -1,51 +1,11 @@
 var express = require("express"),
     app = express(),
     routes = require('./routes'),
-    sockets = require('./app/sockets.js'),
-    User = require('./app/users.js').User,
+    chat = require('./app/chat'),    
     MongoStore = require('connect-mongo')(express),
-    passport = require('passport'),
     passportSocketIo = require("passport.socketio"),
-    GoogleStrategy = require('passport-google').Strategy,    
-    crypto = require('crypto'),   
+    passport = require('./app/passport-strategy').createFrom(express),    
     port = 3700;
-
-passport.use(new GoogleStrategy({
-        returnURL: 'http://10.0.0.17:3700/auth/google/return',
-        realm: 'http://10.0.0.17:3700/'
-    },
-    function (identifier, profile, done) {
-        User.findOne({ id: identifier }, function (err, user) {
-            if (!user) {
-                var u = new User({
-                    id: identifier,
-                    firstName: profile.name.givenName,
-                    lastName: profile.name.familyName,
-                    email: profile.emails[0].value,
-                    loggedIn: true,
-                    gravatar: 'http://www.gravatar.com/avatar/' + crypto.createHash('md5').update(profile.emails[0].value.toLowerCase().trim()).digest('hex') + '?s=100&d=mm&r=g'
-                });
-
-                u.save(function (err) {
-                    if (!err) {
-                        done(null, { id: identifier });
-                    }
-                });
-
-            } else {
-                done(null, { id: identifier });
-            }
-        });
-    }
-));
- 
-passport.serializeUser(function(user, done) {
-  done(null, user.id);
-});
-
-passport.deserializeUser(function(obj, done) {  
-    done(null, obj);
-});
 
 var sessionStore = new MongoStore({
     db: 'chat'
@@ -84,6 +44,6 @@ io.set('authorization', passportSocketIo.authorize({
     fail:        function (data, message, error, accept) { accept(null, false); }
 }));
 
-sockets.init(io);
+chat.init(io);
 
 console.log("Listening on port " + port);
