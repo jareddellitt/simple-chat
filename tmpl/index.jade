@@ -6,5 +6,8 @@ html(ng-app="simple-chat")
         link(rel="stylesheet", href='http://fonts.googleapis.com/css?family=Roboto:400,300,300italic,400italic', type='text/css')
 
     body
-        a(href="/auth/google")
-            Sign in with Google
+        header.header
+            h1 Simple Chat
+        .login
+            a(href="/auth/google" class='sign-in') Sign in with Google
+                

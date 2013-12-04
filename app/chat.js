@@ -22,12 +22,12 @@ function broadcast(event, data) {
 function broadcastParticipants() {
     User.find({ loggedIn: true }, function (err, users) {
         var names = users.map(function (u) {
-            return { 
+            return {
                 name: u.firstName + ' ' + u.lastName,
                 image: u.gravatar
             };
         });
-        
+
         broadcast(events.USERS, names);
     });
 }
@@ -40,7 +40,7 @@ function handleDisconnected(userId) {
         user.save(function () {
             broadcastParticipants();
         });
-    });    
+    });
 }
 
 function handleMessageSent(data, userId) {
@@ -59,7 +59,7 @@ function handleMessageSent(data, userId) {
 
 function bindEventsTo(socket) {
     var userId = socket.handshake.user;
-    
+
     socket.on(events.LOGGED_IN, function (data)  {
         handleLoggedIn(userId, socket, data);
     })
@@ -68,17 +68,17 @@ function bindEventsTo(socket) {
         broadcastParticipants();
     });
 
-    socket.on(events.DISCONNECT, function () {      
+    socket.on(events.DISCONNECT, function () {
         handleDisconnected(userId);
     });
 
     socket.on(events.CHAT, function (data) {
         handleMessageSent(data, userId);
-    });    
+    });
 }
 
 function handleConnected(socket) {
-    var userId = socket.handshake.user;    
+    var userId = socket.handshake.user;
     sockets[userId] = socket;
 
     User.findOne({ id: userId }, function (err, user) {
@@ -86,14 +86,29 @@ function handleConnected(socket) {
             user.loggedIn = true;
             user.save(function () {
                 socket.emit(events.USER, user);
-                
-                broadcastParticipants();     
-                bindEventsTo(socket);          
-            });            
-        }        
+
+                broadcastParticipants();
+                bindEventsTo(socket);
+            });
+        }
     });
 }
 
 exports.init = function (io) {
     io.sockets.on(events.CONNECTION, handleConnected);
+};
+
+exports.shutdown = function (done) {
+    User.find({ loggedIn: true }, function (err, users) {
+        var saved = 0,
+            checkedSaved = function () {
+                saved += 1;
+                if (saved == users.length) done();
+            };
+
+        users.forEach(function (u) {
+            u.loggedIn = false;
+            u.save(checkedSaved);
+        });
+    });
 };

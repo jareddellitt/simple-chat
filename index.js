@@ -1,11 +1,23 @@
 var express = require("express"),
     app = express(),
     routes = require('./routes'),
-    chat = require('./app/chat'),    
+    chat = require('./app/chat'),
     MongoStore = require('connect-mongo')(express),
     passportSocketIo = require("passport.socketio"),
-    passport = require('./app/passport-strategy').createFrom(express),    
+    passport = require('./app/passport-strategy').createFrom(express),
     port = 3700;
+
+
+function shutdownGracefully() {
+    console.log('Something happened, shutting down...');
+
+    chat.shutdown(function () {
+        process.exit();
+    });
+}
+
+process.on('uncaughtException', shutdownGracefully);
+process.on('SIGINT', shutdownGracefully);
 
 var sessionStore = new MongoStore({
     db: 'chat'
@@ -28,15 +40,16 @@ app.use(passport.session(sessionOpts));
 
 app.get('/', routes.index);
 app.get('/chat', routes.chat);
+app.get('/logout', routes.logout);
 app.get('/auth/google', passport.authenticate('google'));
-app.get('/auth/google/return', passport.authenticate('google', { 
-    successRedirect: '/chat', failureRedirect: '/' 
+app.get('/auth/google/return', passport.authenticate('google', {
+    successRedirect: '/chat', failureRedirect: '/'
 }));
 
 var io = require('socket.io').listen(app.listen(port));
 io.set('authorization', passportSocketIo.authorize({
     cookieParser: express.cookieParser,
-    passport:    passport,     
+    passport:    passport,
     secret:      'PY2WzwBtPTjMWSpRbglS',
     store:       sessionStore,
     key:         'connect.sid',

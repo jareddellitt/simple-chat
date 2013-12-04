@@ -1,5 +1,6 @@
 @participants-width: 300px;
 @border-color: #cccccc;
+@dark-text: #333333;
 
 * {
     box-sizing: border-box;
@@ -9,7 +10,7 @@ body {
     font-family: 'Roboto', inherit;
     font-weight: 300;
     margin: 0;
-    color: #333;
+    color: @dark-text;
     line-height: 1.428571429;
     font-size: 14px;
 }
@@ -31,17 +32,23 @@ h1 {
     padding: 0;
 }
 
+a {
+    text-decoration: none;  
+    color: @dark-text; 
+}
+
+.header {
+    padding: 10px;
+    color: #FFF;
+    background: #F26100;
+}
+
 .login {
     width: 300px;
     margin: auto;
     text-align: center;
-
-    .chat-name {
-        font-size: 1.3em;
-        padding: 10px;
-        width: 100%;
-        border: 1px solid #ddd;
-    }
+    font-size: 2em;
+    margin-top: 100px;
 }
 
 .chat {
@@ -50,12 +57,6 @@ h1 {
     left: 0;
     bottom: 101px;
     right: @participants-width;
-
-    .header {
-        padding: 10px;
-        color: #FFF;
-        background: #F26100;
-    }
 
     .chat-text {
         position: absolute;
@@ -91,6 +92,13 @@ h1 {
             display: inline-block;
             margin-right: 10px;
         }
+    }
+
+    .logout {
+        position: absolute;
+        top: 15px;
+        right: 10px;
+        color: #fff;
     }
 }
 

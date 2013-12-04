@@ -5,5 +5,14 @@ exports.index = function (req, res) {
 };
 
 exports.chat = function (req, res) {
-    res.render('chat')
+    if (req.isAuthenticated()) {
+        res.render('chat');
+    } else {
+        res.redirect('/');
+    }
 };
+
+exports.logout = function (req, res) {
+    req.logout();
+    res.redirect('/');
+}
