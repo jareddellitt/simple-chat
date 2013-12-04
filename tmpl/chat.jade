@@ -2,15 +2,14 @@
 html(ng-app="simple-chat")
     head
         title= "Chat"
-        link(rel="stylesheet", href="/css/site.css")
-        link(rel="stylesheet", href='http://fonts.googleapis.com/css?family=Roboto:400,300,300italic,400italic', type='text/css')
-
+        link(rel="stylesheet", type='text/css', href="/css/site.css")
+        link(rel="stylesheet", type='text/css', href='http://fonts.googleapis.com/css?family=Roboto:400,300,300italic,400italic')
     body
         base(href="/chat")
         #main(ng-view)
 
     script(src="/socket.io/socket.io.js")
-    script(src="//code.jquery.com/jquery-2.0.3.min.js") 
+    script(src="//code.jquery.com/jquery-2.0.3.min.js")
     script(src="/js/angular/angular.min.js")
     script(src="/js/angular/angular-route.min.js")
 

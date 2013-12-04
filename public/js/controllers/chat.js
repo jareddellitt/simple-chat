@@ -1,7 +1,8 @@
 (function (app) {
-    var self;
+    var self,
+        VERY_FAR_DOWN = 99999999;
 
-    function controller($scope, $element, $location, socket) {
+    function controller($scope, $element, socket) {
         var messages = $element.find('.messages')[0];
 
         $scope.messages = [];
@@ -12,7 +13,7 @@
 
             $scope.$apply();
 
-            messages.scrollTop = 99999999;
+            messages.scrollTop = VERY_FAR_DOWN;
         });
 
         socket.on('user', function (userData) {
@@ -32,7 +33,7 @@
             restrict: 'AE',
             templateUrl: '/js-templates/chatter.html',
             scope: true,
-            controller: ['$scope', '$element', '$location', 'socket', controller]
+            controller: ['$scope', '$element', 'socket', controller]
         };
     });
 

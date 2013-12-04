@@ -2,12 +2,10 @@
 html(ng-app="simple-chat")
     head
         title= "Chat"
-        link(rel="stylesheet", href="/css/site.css")
-        link(rel="stylesheet", href='http://fonts.googleapis.com/css?family=Roboto:400,300,300italic,400italic', type='text/css')
-
+        link(rel="stylesheet", type='text/css', href="/css/site.css")
+        link(rel="stylesheet", type='text/css', href='http://fonts.googleapis.com/css?family=Roboto:400,300,300italic,400italic')
     body
         header.header
             h1 Simple Chat
         .login
             a(href="/auth/google" class='sign-in') Sign in with Google
-                
