@@ -10,11 +10,9 @@
             data.author = data.from.id === self._id ? 'Me' : data.from.name;
             $scope.messages.push(data);
 
-            $scope.$apply(function () {
-                setTimeout(function () {
-                    messages.scrollTop = 99999999;
-                }, 10);
-            });
+            $scope.$apply();
+
+            messages.scrollTop = 99999999;
         });
 
         socket.on('user', function (userData) {
