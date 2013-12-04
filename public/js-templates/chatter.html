@@ -5,6 +5,11 @@
     </header>
 
     <ul class="messages unstyled">
+        <li class="message" ng-repeat="m in messages" ng-class-even="'striped'">
+            <span class="time">{{ m.prettyTime }}</span>
+            <span class="author">{{ m.author }}:</span>
+            <span class="content">{{ m.message }}</span>
+        </li>
     </ul>
 
     <form ng-submit="submit()">
