@@ -56,7 +56,7 @@ function handleMessageSent(data, userId) {
             }
         });
 
-        messages.add(userId, data.message);
+        messages.add(user, data.message);
     });
 }
 
