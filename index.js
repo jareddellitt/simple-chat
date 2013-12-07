@@ -22,13 +22,13 @@ process.on('SIGINT', shutdownGracefully);
 
 var sessionStore = new MongoStore({
     db: 'chat',
-    // username: 'simpleChat',
-    // password: 's3wCy2tTy6vDesPFheVVYSqd'
+    username: 'simpleChat',
+    password: 's3wCy2tTy6vDesPFheVVYSqd'
 });
 
 mongoose.connect('mongodb://localhost/chat', {
-    // user: 'simpleChat',
-    // pass: 's3wCy2tTy6vDesPFheVVYSqd'
+    user: 'simpleChat',
+    pass: 's3wCy2tTy6vDesPFheVVYSqd'
 });
 
 var sessionOpts = {

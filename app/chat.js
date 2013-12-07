@@ -11,7 +11,8 @@ var _ = require('lodash'),
         LOGGED_IN: 'logged-in',
         CHAT: 'chat',
         NEW_MESSAGE: 'new-message',
-        USER: 'user'
+        USER: 'user',
+        FETCH_DAY: 'fetch-day'
     };
 
 function broadcast(event, data) {
@@ -78,6 +79,16 @@ function bindEventsTo(socket) {
     socket.on(events.CHAT, function (data) {
         handleMessageSent(data, userId);
     });
+
+    socket.on(events.FETCH_DAY, function (data) {
+        var day = moment(data.date).format('MM-DD-YYYY');
+
+        messages.getForDay(day, function (messages) {
+            socket.emit('previous-messages', messages);
+        });
+    });
+
+    socket.emit('start');
 }
 
 function handleConnected(socket) {

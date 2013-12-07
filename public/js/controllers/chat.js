@@ -20,6 +20,27 @@
             self = userData;
         });
 
+        socket.on('previous-messages', function (messages) {
+            messages.forEach(function (m) {
+                console.log(m);
+
+                m.author = m.userId === self._id ? 'Me' : m.userName;
+                $scope.messages.push(m);
+
+                $scope.$apply();
+
+                messages.scrollTop = VERY_FAR_DOWN;
+            })
+        });
+
+        socket.on('start', function () {
+            console.log('starting...');
+
+            socket.emit('fetch-day', {
+                date: new Date()
+            });
+        });
+
         $scope.submit = function () {
             if ($scope.message)
                 socket.emit('chat', { message: $scope.message });
