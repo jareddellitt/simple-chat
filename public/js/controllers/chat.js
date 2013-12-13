@@ -7,35 +7,29 @@
 
         $scope.messages = [];
 
-        socket.on('new-message', function (data) {
-            data.author = data.from.id === self._id ? 'Me' : data.from.name;
-            $scope.messages.push(data);
+
+        function addMessage(m) {
+            m.author = m.userId === self._id ? 'Me' : m.userName;
+            m.prettyTime = moment(m.timestamp).format('h:mm:ss a'),
+
+            $scope.messages.push(m);
 
             $scope.$apply();
 
             messages.scrollTop = VERY_FAR_DOWN;
-        });
+        }
+
+        socket.on('new-message', addMessage);
 
         socket.on('user', function (userData) {
             self = userData;
         });
 
         socket.on('previous-messages', function (messages) {
-            messages.forEach(function (m) {
-                console.log(m);
-
-                m.author = m.userId === self._id ? 'Me' : m.userName;
-                $scope.messages.push(m);
-
-                $scope.$apply();
-
-                messages.scrollTop = VERY_FAR_DOWN;
-            })
+            messages.forEach(addMessage);
         });
 
         socket.on('start', function () {
-            console.log('starting...');
-
             socket.emit('fetch-day', {
                 date: new Date()
             });

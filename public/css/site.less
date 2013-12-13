@@ -1,13 +1,14 @@
 @participants-width: 300px;
 @border-color: #cccccc;
 @dark-text: #333333;
+@accent-color: #5590DA;
 
 * {
     box-sizing: border-box;
 }
 
 body {
-    font-family: 'Roboto', inherit;
+    font-family: 'Helvetica Neue', Helvetica, sans-serif;
     font-weight: 300;
     margin: 0;
     color: @dark-text;
@@ -39,8 +40,27 @@ a {
 
 .header {
     padding: 10px;
-    color: #FFF;
-    background: #F26100;
+    background: #ddd;
+
+    .help {
+        position: absolute;
+        right: 10px;
+        top: 9px;
+        font-size: 1.4em;
+        display: block;
+        width: 30px;
+        height: 30px;
+        border: 1px solid #AAA;
+        border-radius: 15px;
+        text-align: center;
+        color: #AAA;
+        cursor: default;
+    }
+}
+
+.accent {
+    background: @accent-color;
+    color: #ffffff;
 }
 
 .login {
@@ -67,6 +87,7 @@ a {
         border-top: 1px solid @border-color;
         padding: 10px;
         font-size: 1.5em;
+        color: #555;
     }
 
     .messages {
@@ -88,7 +109,7 @@ a {
         }
 
         .author {
-            font-weight: bold;
+            font-weight: 400;
             display: inline-block;
             margin-right: 10px;
         }
@@ -106,15 +127,11 @@ a {
     position: fixed;
     right: 0;
     top: 0;
-    bottom: 0;
+    bottom: 300px;
     width: @participants-width;
     border-left: 1px solid @border-color;
+    border-bottom: 1px solid @border-color;
     background: #fff;
-
-    .header {
-        padding: 10px;
-        background: #ddd;
-    }
 
     h2 {
         font-size: 16px;
@@ -138,5 +155,18 @@ a {
                 margin-left: 10px;
             }
         }
+    }
+}
+
+.file-uploader {
+    position: fixed;
+    right: 0px;
+    bottom: 0px;
+    height: 300px;
+    border-left: 1px solid @border-color;
+    width: 300px;
+
+    &.dragging {
+        background: rgba(85, 144, 218, .15);
     }
 }

@@ -16,9 +16,7 @@ var _ = require('lodash'),
     };
 
 function broadcast(event, data) {
-    _.each(sockets, function (s) {
-        s.emit(event, data);
-    });
+    _.each(sockets, function (s) { s.emit(event, data); });
 }
 
 function broadcastParticipants() {
@@ -47,30 +45,24 @@ function handleDisconnected(userId) {
 
 function handleMessageSent(data, userId) {
     User.findOne({ id: userId }, function (err, user) {
-        broadcast(events.NEW_MESSAGE, {
-            timestamp: new Date(),
-            prettyTime: moment().format('h:mm:ss a'),
-            message: data.message,
-            from: {
-                id: user._id,
-                name: user.firstName + ' ' + user.lastName
-            }
+        messages.add(user, data.message, function (msg) {
+            broadcast(events.NEW_MESSAGE, msg);
         });
+    });
+}
 
-        messages.add(user, data.message);
+function fetchDay(data, socket) {
+    var day = moment(data.date).format('MM-DD-YYYY');
+
+    messages.getForDay(day, function (messages) {
+        socket.emit('previous-messages', messages);
     });
 }
 
 function bindEventsTo(socket) {
     var userId = socket.handshake.user;
 
-    socket.on(events.LOGGED_IN, function (data)  {
-        handleLoggedIn(userId, socket, data);
-    })
-
-    socket.on(events.FETCH_USERS, function () {
-        broadcastParticipants();
-    });
+    socket.on(events.FETCH_USERS, broadcastParticipants);
 
     socket.on(events.DISCONNECT, function () {
         handleDisconnected(userId);
@@ -81,11 +73,7 @@ function bindEventsTo(socket) {
     });
 
     socket.on(events.FETCH_DAY, function (data) {
-        var day = moment(data.date).format('MM-DD-YYYY');
-
-        messages.getForDay(day, function (messages) {
-            socket.emit('previous-messages', messages);
-        });
+        fetchDay(data.date, socket);
     });
 
     socket.emit('start');

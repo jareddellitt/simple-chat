@@ -2,8 +2,8 @@ var User = require('./users').User,
     GoogleStrategy = require('passport-google').Strategy,
     crypto = require('crypto'),
     passport = require('passport'),
-    // host = 'http://10.0.0.17:3700';
-    host = 'http://192.168.128.43:3700';
+    host = 'http://10.0.0.17:3700';
+    // host = 'http://192.168.128.43:3700';
 
 function createGravatarFrom(email) {
     var hash = crypto.createHash('md5').update(email.toLowerCase().trim()).digest('hex');

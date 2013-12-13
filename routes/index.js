@@ -12,6 +12,12 @@ exports.chat = function (req, res) {
     }
 };
 
+exports.upload = function (req, res) {
+    console.log(req);
+
+    res.send({ status: 'ok' });
+};
+
 exports.logout = function (req, res) {
     req.logout();
     res.redirect('/');

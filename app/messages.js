@@ -18,7 +18,7 @@ var daySchema = new Schema({
 
 var Day = mongoose.model('Days', daySchema);
 
-exports.add = function (user, message) {
+exports.add = function (user, message, callback) {
 	var today = moment().format('MM-DD-YYYY'),
 		msg = {
 			userId: user._id,
@@ -39,11 +39,13 @@ exports.add = function (user, message) {
 			day.messages.push(msg);
 			day.save();
 		}
+
+		callback(msg);
 	});
 };
 
 exports.getForDay = function (day, callback) {
 	Day.findOne({ day: day }, function (err, day) {
-		callback(day.messages);
+		callback(day ? day.messages : []);
 	});
 };
