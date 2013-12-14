@@ -8,7 +8,9 @@
         <li class="message" ng-repeat="m in messages" ng-class-even="'striped'">
             <span class="time">{{ m.prettyTime }}</span>
             <span class="author">{{ m.author }}:</span>
-            <span class="content">{{ m.message }}</span>
+
+            <span class="content" ng-bind-html="m.html" ng-if="m.html"></span>
+            <span class="content" ng-if="!m.html">{{ m.message }}</span>
         </li>
     </ul>
 

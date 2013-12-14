@@ -45,7 +45,7 @@ function handleDisconnected(userId) {
 
 function handleMessageSent(data, userId) {
     User.findOne({ id: userId }, function (err, user) {
-        messages.add(user, data.message, function (msg) {
+        messages.add(user, data.message, 'text', function (msg) {
             broadcast(events.NEW_MESSAGE, msg);
         });
     });
@@ -98,6 +98,16 @@ function handleConnected(socket) {
 
 exports.init = function (io) {
     io.sockets.on(events.CONNECTION, handleConnected);
+};
+
+exports.broadcastFile = function (file, userId) {
+    var tag = '<img src="data:' + file.type + ';base64,' + file.data.toString('base64') + '"/>';
+
+    User.findOne({ id: userId }, function (err, user) {
+        messages.add(user, tag, 'image', function (msg) {
+            broadcast(events.NEW_MESSAGE, msg);
+        });
+    });
 };
 
 exports.shutdown = function (done) {

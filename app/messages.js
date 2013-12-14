@@ -8,7 +8,8 @@ var messageSchema = new Schema({
 	userName: String,
 	userImage: String,
 	date: { type: Date, default: Date.now },
-	message: String
+	message: String,
+	type: String
 });
 
 var daySchema = new Schema({
@@ -18,13 +19,14 @@ var daySchema = new Schema({
 
 var Day = mongoose.model('Days', daySchema);
 
-exports.add = function (user, message, callback) {
+exports.add = function (user, message, type, callback) {
 	var today = moment().format('MM-DD-YYYY'),
 		msg = {
 			userId: user._id,
 			userName: user.firstName + ' ' + user.lastName,
 			userImage: user.gravatar,
-			message: message
+			message: message,
+			type: type
 		};
 
 	Day.findOne({ day: today }, function (err, day) {

@@ -6,6 +6,9 @@
             templateUrl: '/js-templates/uploader.html',
             scope: true,
             controller: ['$scope', '$element', function ($scope, $element) {
+                Dropzone.options.fileUploader = {
+                    paramName: 'file'
+                };
 
                 var dz = new Dropzone('#file-uploader', {
                     url: '/upload'

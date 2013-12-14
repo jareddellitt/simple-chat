@@ -2,20 +2,21 @@
     var self,
         VERY_FAR_DOWN = 99999999;
 
-    function controller($scope, $element, socket) {
+    function controller($scope, $element, $sce, socket) {
         var messages = $element.find('.messages')[0];
 
         $scope.messages = [];
 
-
         function addMessage(m) {
             m.author = m.userId === self._id ? 'Me' : m.userName;
-            m.prettyTime = moment(m.timestamp).format('h:mm:ss a'),
+            m.prettyTime = moment(m.timestamp).format('h:mm:ss a');
+
+            if (m.type === 'image') {
+                m.html = $sce.trustAsHtml(m.message);
+            }
 
             $scope.messages.push(m);
-
             $scope.$apply();
-
             messages.scrollTop = VERY_FAR_DOWN;
         }
 
@@ -48,7 +49,7 @@
             restrict: 'AE',
             templateUrl: '/js-templates/chatter.html',
             scope: true,
-            controller: ['$scope', '$element', 'socket', controller]
+            controller: ['$scope', '$element', '$sce', 'socket', controller]
         };
     });
 
